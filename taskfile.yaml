@@ -1,0 +1,44 @@
+
+version: '3'
+tasks:
+  ts-live:
+    desc: typescript live compiler from src/** onto build/**
+    cmds:
+      - npx tsc --watch
+
+  ts-test:
+    desc: typescript compile from tests/main.test.ts to tests/main.test.js
+    cmds:
+      - npx tsc -p tsconfig.test.json
+
+  pkgi:
+    desc: install nodejs pkg + ts ts [ARGS- <pkg-name>]
+    cmds:
+      - npm install {{.CLI_ARGS}}
+      - npm install --save-dev @types/{{.CLI_ARGS}}
+
+  serve:
+    desc: run the express server 
+    cmds:
+      - node build/main.js
+
+  watch:
+    desc: nodemon watch updates & rerun server (requires nodemon)
+    cmds:
+      - npx nodemon build/main.js 
+
+  ping:
+    desc: ping running server(connection test)
+    cmds:
+      - curl http://localhost:3000/ping
+
+  rebuild-backend:
+    desc: no cache build for the backend service
+    cmds:
+      - docker compose build --no-cache backend
+
+  services-restart:
+    desc: restart the docker compose container services
+    cmds:
+      - docker compose down
+      - COMPOSE_BAKE=true docker compose up -d 
